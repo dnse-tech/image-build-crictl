@@ -15,6 +15,7 @@ ARG PKG="github.com/kubernetes-sigs/cri-tools"
 ARG SRC="github.com/kubernetes-sigs/cri-tools"
 ARG TAG="v1.31.0"
 ARG ARCH="amd64"
+ARG TARGETARCH
 RUN git clone --depth=1 https://${SRC}.git $GOPATH/src/${PKG}
 WORKDIR $GOPATH/src/${PKG}
 RUN git fetch --all --tags --prune
@@ -30,7 +31,7 @@ RUN set -x; \
 RUN GO_LDFLAGS="-linkmode=external -X $(awk '/^module /{print $2}' go.mod)/pkg/version.Version=${TAG}" \
     go-build-static.sh -gcflags=-trimpath=${GOPATH}/src -o bin/crictl ./cmd/crictl
 RUN go-assert-static.sh bin/*
-RUN if [ "${ARCH}" = "amd64" ]; then \
+RUN if [ "${TARGETARCH:-amd64}" = "amd64" ]; then \
         go-assert-boring.sh bin/* ; \
     fi
 RUN install -s bin/* /usr/local/bin
