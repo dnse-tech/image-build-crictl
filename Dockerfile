@@ -1,4 +1,4 @@
-ARG GO_IMAGE=ghcr.io/dnse-tech/hardened-build-base:v1.25.6b1
+ARG GO_IMAGE=ghcr.io/dnse-tech/hardened-build-base:v1.26.4b1
 FROM ${GO_IMAGE} as builder
 # setup required packages
 RUN set -x && \
