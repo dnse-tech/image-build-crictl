@@ -1,6 +1,7 @@
 # Hardened QEMU s390x release workflow for the image-build CONSUMER family (components built FROM the
 # dnse-tech hardened base, e.g. dns-node-cache, containerd, flannel). Builds the s390x leg under QEMU
-# on ubuntu-latest, then combines it with the upstream amd64/arm64 legs (pinned BY DIGEST) into one
+# on a self-hosted x64 runner (labels: self-hosted, Linux, X64, os:ubuntu-24.04), then combines it
+# with the upstream amd64/arm64 legs (pinned BY DIGEST) into one
 # published manifest. workflow_dispatch-only.
 #
 # Differs from the base template: the dispatch `tag` is the COMPONENT image version (e.g.
@@ -80,6 +81,9 @@ jobs:
           file: Dockerfile
           platforms: linux/s390x
           push: true
+          # Dockerfile build target — rendered per-fork. Empty = final stage (single-image forks);
+          # set for multi-image forks (e.g. multus thin/thick) so each pseudo-project builds its stage.
+          target: 
           build-args: |
             TAG=${{ steps.get-tag.outputs.source_tag }}
           # Read-only token for fetching s390x build deps from PRIVATE sibling forks (e.g.
